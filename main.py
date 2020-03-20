@@ -13,7 +13,7 @@ def cost(x):
     Watermarking.watermark()
     Watermarking.extracted()
     test.add_gaussian_noise("watermarked_lena.jpg", output_image="watermarked_lena.jpg")
-    return Watermarking.psnr_cal(img1="lena.jpg", img2="watermarked_lena.jpg")
+    return test.calculate_psnr_nc(img1="lena.jpg", img2="watermarked_lena.jpg")
 
 
 def ensure_bounds(vec, bounds):

@@ -3,8 +3,6 @@ from matplotlib import pyplot as plt
 import random
 import numpy as np
 from skimage import data
-from skimage.transform import rotate
-from skimage.transform import rescale
 import skimage.metrics
 from PIL import Image
 import PIL
@@ -18,7 +16,7 @@ def add_gaussian_noise(X_imgs, output_image="gaussian_noise_attack.jpg"):
 
 
 # Test 2
-def add_salt_pepper_noise(X_imgs, prob=0.01):
+def add_salt_pepper_noise(X_imgs, prob=0.05):
     input_image = cv2.imread(X_imgs)
     output = np.zeros(input_image.shape, np.uint8)
     thres = 1 - prob
@@ -48,7 +46,7 @@ def add_rotation_test(angle, X_img):
 # Test 4
 def rescale_test(X_img):
     input_image = Image.open(X_img)
-    # Size of the image in pixels (size of original image)
+    # Size of the image in pixels (size of orginal image)
     width, height = input_image.size
     # Setting the points for cropped image
     left = 4
@@ -91,6 +89,7 @@ def plot_image(X_img, attack_img, title):
     plt.show()
 
 
+
 def calculate_psnr_nc(img1="lena.jpg", img2="watermarked_lena.jpg"):
     im1 = cv2.imread(img1, 0)
     im2 = cv2.imread(img2, 0)
@@ -119,10 +118,12 @@ def calculate_normalized_correlation(image1, image2):
         return (numerator / denominator) * fac
 
 
+
+
 def print_data(attack, img, X_img):
     print("For ", attack)
-    results = calculate_psnr_nc(X_img, img)
-    print("PSNR: ", results[0], "NC: ", results[1])
+    a = calculate_psnr_nc(X_img, img)
+    print("PSNR: ", a[0], "NC: ", a[1])
 
 
 def testing(X_img):

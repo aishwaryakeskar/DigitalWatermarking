@@ -1,10 +1,10 @@
-
 import cv2
 import pywt
 import numpy as np
 import skimage.metrics
 from matplotlib import pyplot as plt
 import random
+
 
 class Components():
     Coefficients = []
@@ -26,10 +26,10 @@ class watermarking():
         self.W_components.Coefficients, self.W_components.U, \
         self.W_components.S, self.W_components.V = self.calculate(watermark_path)
         self.x = x
-        self.cover_imagedata = cv2.imread(cover_image, 0)
-        if self.cover_imagedata.shape != (512, 512):
-            self.cover_imagedata.resize(512, 512)
-            cv2.imwrite(cover_image, self.cover_imagedata)
+        self.cover_image_data = cv2.imread(cover_image, 0)
+        if self.cover_image_data.shape != (512, 512):
+            self.cover_image_data.resize(512, 512)
+            cv2.imwrite(cover_image, self.cover_image_data)
             # print(self.cover_image.shape)
         # self.W_ndarr = cv2.imread(watermark_path,0)
         # print("watermark", self.W_ndarr.shape)
@@ -43,6 +43,17 @@ class watermarking():
             img = cv2.imread(img, 0)
         Coefficients = pywt.wavedec2(img, wavelet=self.wavelet, level=self.level)
         self.shape_LL = Coefficients[0].shape
+        print("LL shape: ", self.shape_LL)
+        LL, LH, HL, HH = Coefficients
+        print("coeff LL:", Coefficients[0])
+        print("Coefficients LL: ", LL)
+        print("coeff Coefficients[0]:", np.shape(Coefficients[0]))
+        print("coeff Coefficients[1]:", np.shape(Coefficients[1]))
+        print("coeff Coefficients[2]:", np.shape(Coefficients[2]))
+        print("coeff Coefficients[3]:", np.shape(Coefficients[3]))
+
+
+
         U, S, V = np.linalg.svd(Coefficients[0])
         return Coefficients, U, S, V
 
@@ -110,8 +121,6 @@ class watermarking():
         input_image = cv2.imread(X_imgs)
         output = cv2.GaussianBlur(input_image, (5, 5), 0)
         cv2.imwrite('watermarked_lena.jpg', output)
-
-
 
 
 
