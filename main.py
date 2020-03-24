@@ -145,8 +145,8 @@ popsize = 4  # Population size, must be >= 4
 mutate = 0.015  # Mutation factor [0,2]
 recombination = 0.7  # Recombination rate [0,1]
 maxiter = 400  # Max number of generations (maxiter)
-psnr_value = 27
-nc_value = 0.43
+psnr_value = 55
+nc_value = 0.42
 
 # --- RUN ----------------------------------------------------------------------+
 

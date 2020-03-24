@@ -11,6 +11,10 @@ class Components():
     U = None
     S = None
     V = None
+    LL = None
+    LH = None
+    HL = None
+    HH = None
 
 
 class watermarking():
@@ -27,7 +31,9 @@ class watermarking():
         self.W_components = Components()
         self.img_components = Components()
         self.W_components.Coefficients, self.W_components.U, \
-        self.W_components.S, self.W_components.V, self.W_components.LL = self.calculate(watermark_path, 3)
+        self.W_components.S, self.W_components.V, \
+        self.W_components.LL, self.W_components.HL, self.W_components.LH, self.W_components.HH, \
+            self.W_components.arr, self.W_components.slices = self.calculate(watermark_path, 3)
         self.x = x
         self.cover_image_data = cv2.imread(cover_image, 0)
         if self.cover_image_data.shape != (512, 512):
@@ -64,7 +70,7 @@ class watermarking():
         # plt.show()
 
         U, S, V = np.linalg.svd(LL)
-        return Coefficients, U, S, V, LL
+        return Coefficients, U, S, V, LL, HL, LH, HH, arr, slices
 
     def diag(self, s):
         '''
@@ -83,8 +89,12 @@ class watermarking():
         '''
         components = eval("self.{}_components".format(name))
         s = eval("self.S_{}".format(name))
-        components.Coefficients[0] = components.U.dot(self.diag(s)).dot(components.V)
-        return pywt.waverec2(components.Coefficients, wavelet=self.wavelet)
+        # components.Coefficients[0] = components.U.dot(self.diag(s)).dot(components.V)
+        # return pywt.waverec2(components.Coefficients, wavelet=self.wavelet)
+
+        components.LL = components.U.dot(self.diag(s)).dot(components.V)
+        coeffs_from_arr = pywt.array_to_coeffs(components.arr, components.slices, output_format = 'wavedec2')
+        return pywt.waverec2(coeffs_from_arr, wavelet=self.wavelet)
 
     def watermark(self, img="lena.jpg", path_save=None):
         '''
@@ -95,7 +105,9 @@ class watermarking():
             path_save = "watermarked_" + img
         self.path_save = path_save
         self.img_components.Coefficients, self.img_components.U, \
-        self.img_components.S, self.img_components.V, self.img_components.LL = self.calculate(img, 3)
+        self.img_components.S, self.img_components.V, \
+        self.img_components.LL, self.img_components.HL, self.img_components.LH, self.img_components.HH, \
+            self.img_components.arr, self.img_components.slices = self.calculate(img, 3)
         self.embed()
         img_rec = self.recover("img")  # watermarked image
         cv2.imwrite(path_save, img_rec)
@@ -113,7 +125,9 @@ class watermarking():
         img = cv2.imread(image_path, 0)
         img = cv2.resize(img, self.shape_watermark)
         img_components = Components()  # watermarked image
-        img_components.Coefficients, img_components.U, img_components.S, img_components.V, img_components.LL = self.calculate(img, 3)
+        img_components.Coefficients, img_components.U, img_components.S, img_components.V, \
+        img_components.LL, img_components.HL, img_components.LH, img_components.HH, \
+            img_components.arr, img_components.slices = self.calculate(img, 3)
         ratio_ = self.ratio if not self.x[0] else ratio
         self.S_W = (img_components.S - self.img_components.S) / self.x[0]
         watermark_extracted = self.recover("W")
