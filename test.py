@@ -16,7 +16,7 @@ def add_gaussian_noise(X_imgs, output_image="gaussian_noise_attack.jpg"):
 
 
 # Test 2
-def add_salt_pepper_noise(X_imgs, prob=0.05):
+def add_salt_pepper_noise(X_imgs, prob=0.5):
     input_image = cv2.imread(X_imgs)
     output = np.zeros(input_image.shape, np.uint8)
     thres = 1 - prob

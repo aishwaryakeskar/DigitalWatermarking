@@ -45,7 +45,7 @@ print("For the Watermark image")
 test.print_data("Rotation Attack", "watermark_extracted.jpg", "watermark_extracted_rotation.jpg")
 test.plot_image("watermark1.jpg", "watermark_extracted_rotation.jpg", "Rotation Attack ")
 
-test.add_rotation_test(2, "watermarked_lena.jpg")
+test.add_rotation_test(20, "watermarked_lena.jpg")
 test.plot_image("watermarked_lena.jpg", "rotation_attack.jpg", 'Rotation Attack')
 test.print_data("Rotation Attack", "rotation_attack.jpg", "watermarked_lena.jpg")
 
