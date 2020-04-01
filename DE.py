@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 
 Watermarking = watermarking(level=3, cover_image="lena.jpg")
 
+
 def cost(x):
     Watermarking = watermarking(level=3, x=x, cover_image="lena.jpg", watermark_path="watermark1.jpg")
     Watermarking.watermark()
@@ -51,7 +52,6 @@ def differential_evolution(cost_func, bounds, popsize, mutate, recombination, ma
                   [0.0675],
                   [0.0666]
                   ]
-
 
     print("\nPOPULATION: ", population)
 

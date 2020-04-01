@@ -1,5 +1,5 @@
 from watermarking import watermarking
-from main import get_de_values
+from DE import get_de_values
 import test
 
 values = get_de_values()

@@ -2,6 +2,7 @@ import cv2
 import pywt
 import numpy as np
 
+
 class Components:
     Coefficients = []
     LL = None
@@ -44,7 +45,6 @@ class watermarking:
         sub_bands = LL, HL, LH, HH
         return LL, sub_bands, coeff_arr, slices
 
-
     def calculate_svd(self, LL):
         U, S, V = np.linalg.svd(LL)
 
@@ -71,10 +71,8 @@ class watermarking:
 
         components.LL = components.ULL.dot(self.diag(sll)).dot(components.VLL)
 
-        coeffs_from_arr = pywt.array_to_coeffs(components.coeff_arr, components.slices, output_format = 'wavedec2')
+        coeffs_from_arr = pywt.array_to_coeffs(components.coeff_arr, components.slices, output_format='wavedec2')
         return pywt.waverec2(coeffs_from_arr, wavelet=self.wavelet)
-
-
 
     def watermark(self, img="lena.jpg", watermark_path="watermark1.jpg", path_save=None):
         '''
@@ -99,9 +97,6 @@ class watermarking:
 
         recovered_image = self.recover("cover_img")  # watermarked image
         cv2.imwrite(path_save, recovered_image)
-        # self.gaussian_smoothning(X_imgs="watermarked_lena.jpg")
-
-
 
     def extracted(self, image_path="watermarked_lena.jpg", ratio=None,
                   extracted_watermark_path="watermark_extracted.jpg"):
@@ -114,7 +109,9 @@ class watermarking:
             image_path = self.path_save
         img = cv2.imread(image_path, 0)
         img = cv2.resize(img, self.shape_watermark)
-        wmkd_img_components = Components()  # watermarked image
+
+        # Watermarked Image
+        wmkd_img_components = Components()
 
         wmkd_img_components.LL, wmkd_img_components.sub_bands, \
         wmkd_img_components.coeff_arr, wmkd_img_components.slices = self.calculate_dwt(img, 3)
@@ -129,8 +126,6 @@ class watermarking:
         watermark_extracted = self.recover("wmk_img")
 
         cv2.imwrite(extracted_watermark_path, watermark_extracted)
-
-
 
     def embed(self):
         self.SLL_cover_img = self.cover_img_components.SLL + self.x[0] * self.wmk_img_components.LL
