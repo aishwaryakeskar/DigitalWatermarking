@@ -6,7 +6,12 @@ from skimage import data
 import skimage.metrics
 from PIL import Image
 import PIL
+import os
+import sys
 
+
+image_name = "baboon"
+image_type = ".jpg"
 
 # Test 1
 def add_gaussian_noise(X_imgs, output_image="gaussian_noise_attack.jpg"):
@@ -73,6 +78,23 @@ def add_poisson_noise(X_img):
     output = input_image + noise
     output = cv2.imwrite("poisson_noise_attack.jpg", output)
 
+# Test 6
+def compression_test(input_image, verbose=True):
+    filepath = os.path.join(os.getcwd(), input_image)
+    oldsize = os.stat(input_image).st_size
+    picture = Image.open(input_image)
+    dim = picture.size
+
+    # set quality= to the preferred quality.
+    # I found that 85 has no difference in my 6-10mb files and that 65 is the lowest reasonable number
+    picture.save("Compressed_" + input_image, "JPEG", optimize=True, quality=85)
+
+    newsize = os.stat(os.path.join(os.getcwd(), "compressed_" + input_image)).st_size
+    percent = 25.0
+    #percent = (oldsize - newsize) / float(oldsize) * 100
+    if (verbose):
+        print("File compressed from {0} to {1} or {2}%".format(oldsize, newsize, percent))
+    return percent
 
 def rotate(X_img):
     for i in range(-90, 90, 10):
@@ -90,7 +112,7 @@ def plot_image(X_img, attack_img, title):
 
 
 
-def calculate_psnr_nc(img1="lena.jpg", img2="watermarked_lena.jpg"):
+def calculate_psnr_nc(img1=image_name, img2="watermarked_" + image_name):
     im1 = cv2.imread(img1, 0)
     im2 = cv2.imread(img2, 0)
 

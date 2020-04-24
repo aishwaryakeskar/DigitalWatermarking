@@ -5,15 +5,19 @@ from watermarking import watermarking
 import test
 from matplotlib import pyplot as plt
 
-Watermarking = watermarking(level=3, cover_image="lena.jpg")
+image_type = ".jpg"
+cover_image_name = "baboon" + image_type
+watermark_image_name = "watermark1" + image_type
+
+
+Watermarking = watermarking(level=3, cover_image=cover_image_name)
 
 
 def cost(x):
-    Watermarking = watermarking(level=3, x=x, cover_image="lena.jpg", watermark_path="watermark1.jpg")
+    Watermarking = watermarking(level=3, x=x, cover_image=cover_image_name, watermark_path=watermark_image_name)
     Watermarking.watermark()
     Watermarking.extracted()
-    test.add_gaussian_noise("watermarked_lena.jpg", output_image="watermarked_lena.jpg")
-    return test.calculate_psnr_nc(img1="lena.jpg", img2="watermarked_lena.jpg")
+    return test.calculate_psnr_nc(img1=cover_image_name, img2="watermarked_" + cover_image_name)
 
 
 def ensure_bounds(vec, bounds):
@@ -47,10 +51,10 @@ def differential_evolution(cost_func, bounds, popsize, mutate, recombination, ma
     #         for j in range(len(bounds)):
     #             indv.append(random.uniform(bounds[j][0],bounds[j][1]))
     #         population.append(indv)
-    population = [[0.025],
+    population = [[0.0666],
                   [0.045],
                   [0.0675],
-                  [0.0666]
+                  [0.011]
                   ]
 
     print("\nPOPULATION: ", population)

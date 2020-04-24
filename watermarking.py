@@ -1,7 +1,7 @@
 import cv2
 import pywt
 import numpy as np
-
+from PIL import Image
 
 class Components:
     Coefficients = []
@@ -11,9 +11,14 @@ class Components:
     HH = None
 
 
+image_type = ".jpg"
+cover_image_name = "baboon" + image_type
+watermark_image_name = "watermark1" + image_type
+
+
 class watermarking:
-    def __init__(self, watermark_path="watermark1.jpg", ratio=0.1, wavelet="haar", level=3, x=[0.1],
-                 cover_image="lena.jpg"):
+    def __init__(self, watermark_path=watermark_image_name, ratio=0.1, wavelet="haar", level=3, x=[0.1],
+                 cover_image=cover_image_name):
         self.level = level
         self.wavelet = wavelet
         self.ratio = x[0]
@@ -26,6 +31,13 @@ class watermarking:
         if self.cover_image_data.shape != (512, 512):
             self.cover_image_data.resize(512, 512)
             cv2.imwrite(cover_image, self.cover_image_data)
+
+    # def convertToGrayscale(self, img):
+    #     # if isinstance(img, str):
+    #     #     img = cv2.imread(img, 0)
+    #
+    #     gray_img = Image.open(img).convert('LA')
+    #     return gray_img
 
     def calculate_dwt(self, img, lvl):
 
@@ -74,7 +86,7 @@ class watermarking:
         coeffs_from_arr = pywt.array_to_coeffs(components.coeff_arr, components.slices, output_format='wavedec2')
         return pywt.waverec2(coeffs_from_arr, wavelet=self.wavelet)
 
-    def watermark(self, img="lena.jpg", watermark_path="watermark1.jpg", path_save=None):
+    def watermark(self, img=cover_image_name, watermark_path=watermark_image_name, path_save=None):
         '''
         This is the main function for image watermarking.
         :param img: image path or numpy array of the image.
@@ -82,6 +94,8 @@ class watermarking:
         if not path_save:
             path_save = "watermarked_" + img
         self.path_save = path_save
+        #img = self.convertToGrayscale(img)
+
         # Cover Image
         self.cover_img_components.LL, self.cover_img_components.sub_bands, \
         self.cover_img_components.coeff_arr, self.cover_img_components.slices = self.calculate_dwt(img, 3)
@@ -98,7 +112,7 @@ class watermarking:
         recovered_image = self.recover("cover_img")  # watermarked image
         cv2.imwrite(path_save, recovered_image)
 
-    def extracted(self, image_path="watermarked_lena.jpg", ratio=None,
+    def extracted(self, image_path="watermarked_" + cover_image_name, ratio=None,
                   extracted_watermark_path="watermark_extracted.jpg"):
         '''
         Extracted the watermark from the given image.
@@ -108,7 +122,7 @@ class watermarking:
         if not image_path:
             image_path = self.path_save
         img = cv2.imread(image_path, 0)
-        img = cv2.resize(img, self.shape_watermark)
+        #img = cv2.resize(img, self.shape_watermark)
 
         # Watermarked Image
         wmkd_img_components = Components()
